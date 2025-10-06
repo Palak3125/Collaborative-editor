@@ -230,6 +230,45 @@ function App() {
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
+  const deleteDocument = async (docId, e) => {
+  e.stopPropagation(); // Prevent opening the document
+  
+  if (!window.confirm('Are you sure you want to delete this document?')) {
+    return;
+  }
+
+  console.log('Document ID to delete:', docId); 
+  console.log('Full ID string:', JSON.stringify(docId));
+  
+  try {
+    const baseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
+    const url = `${baseUrl}/api/documents/${docId}`;
+    
+    console.log('DELETE request URL:', url); // 👈 See the exact URL
+    
+    const response = await fetch(url, { 
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    console.log('Response status:', response.status); // 👈 Check status
+    
+    if (response.ok) {
+      setDocuments(documents.filter(doc => doc._id !== docId));
+      alert('Document deleted successfully');
+    } else {
+      const data = await response.json().catch(() => ({}));
+      console.log('Error response:', data);
+      alert(`Failed to delete: ${data.error || response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error deleting:', error);
+    alert(`Failed to delete document: ${error.message}`);
+  }
+};
+
   if (!isJoined) {
     return (
       <div className="login-container">
@@ -288,19 +327,33 @@ function App() {
             <div className="recent-documents">
               <h3>Recent Documents:</h3>
               <ul>
-                {documents.slice(0, 5).map((doc) => (
+                {documents.map((doc) => (
                   <li key={doc._id}>
                     <button
-                      onClick={() => setDocumentId(doc._id)}
-                      className="doc-button"
-                    >
-                      📄 {doc.title} ({doc.language})
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+                    onClick={() => {
+                      if (!userName.trim()) {
+                        alert('Please enter your name first');
+                        return;
+                      }
+                    setDocumentId(doc._id);
+                    setIsJoined(true); // Auto-join the document
+          }}
+            className="doc-button"
+          >
+            📄 {doc.title} ({doc.language})
+          </button>
+          <button
+            onClick={(e) => deleteDocument(doc._id, e)}
+            className="delete-btn"
+            title="Delete document"
+          >
+            🗑️
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
         </div>
       </div>
     );

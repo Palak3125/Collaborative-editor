@@ -295,6 +295,10 @@ try {
 }
 
 // Routes
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
 app.use('/api/documents', documentRoutes);
 
 // Test MongoDB connection endpoint

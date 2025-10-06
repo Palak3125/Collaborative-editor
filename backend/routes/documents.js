@@ -47,5 +47,48 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch documents' });
   }
 });
+// DELETE document
+/*router.delete('/:id', async (req, res) => {
+  try {
+    const document = await Document.findByIdAndDelete(req.params.id);
+    
+    if (!document) {
+      return res.status(404).json({ error: 'Document not found' });
+    }
+    
+    console.log('🗑️ Document deleted:', req.params.id);
+    res.json({ message: 'Document deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    res.status(500).json({ error: 'Failed to delete document' });
+  }
+});*/
+router.delete('/:id', async (req, res) => {
+  try {
+    // Decode the ID in case it's URL encoded
+    const docId = decodeURIComponent(req.params.id);
+    console.log('🔍 Attempting to delete document:', docId);
+    
+    // Find and delete the document
+    const document = await Document.findByIdAndDelete(docId);
+    
+    if (!document) {
+      console.log('❌ Document not found:', docId);
+      return res.status(404).json({ error: 'Document not found' });
+    }
+    
+    console.log('✅ Document deleted successfully:', docId);
+    res.json({ message: 'Document deleted successfully', documentId: docId });
+  } catch (error) {
+    console.error('❌ Error deleting document:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'Invalid document ID format' });
+    }
+    
+    res.status(500).json({ error: 'Failed to delete document', details: error.message });
+  }
+});
 
 module.exports = router;

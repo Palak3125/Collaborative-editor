@@ -575,3 +575,28 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #484f58;
 }
+
+.recent-documents li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.doc-button {
+  flex: 1;
+  text-align: left;
+}
+
+.delete-btn {
+  padding: 8px 12px;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
