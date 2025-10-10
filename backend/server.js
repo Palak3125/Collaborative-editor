@@ -190,20 +190,21 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+const corsOrigins = [
+  'http://localhost:3000',
+  'https://collaborative-editor-blush.vercel.app',
+  /\.vercel\.app$/ 
+];
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: corsOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
   }
 });
 
 // Middleware
 app.use(cors({
-  origin:[
-    'http://localhost:3000',
-    'https://collaborative-editor-blush.vercel.app', // Update this after deploying frontend
-    /\.vercel\.app$/ // Allow all Vercel preview deployments
-  ],
+  origin:corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
