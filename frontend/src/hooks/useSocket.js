@@ -40,7 +40,7 @@ const useSocket = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
+    const serverUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     
     const newSocket = io(serverUrl, {
       transports: ['polling', 'websocket'], // Try polling first, then upgrade to websocket
