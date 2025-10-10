@@ -199,9 +199,9 @@ const io = socketIo(server, {
 
 // Middleware
 app.use(cors({
-  origin: [
+  origin: process.env.FRONTEND_URL [
     'http://localhost:3000',
-    'https://your-app-name.vercel.app', // Update this after deploying frontend
+    'collaborative-editor-blush.vercel.app', // Update this after deploying frontend
     /\.vercel\.app$/ // Allow all Vercel preview deployments
   ],
   credentials: true,
