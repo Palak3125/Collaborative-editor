@@ -168,19 +168,18 @@ function App() {
   const [userColor, setUserColor] = useState('#FF6B6B');
   const [isJoined, setIsJoined] = useState(false);
   const [documents, setDocuments] = useState([]);
-
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
   useEffect(() => {
-    // Load available documents
-    fetch(`${process.env.REACT_APP_SERVER_URL || 'http://localhost:5000'}/api/documents`)
-      .then(res => res.json())
-      .then(data => setDocuments(data))
-      .catch(console.error);
+    fetch(`${API_URL}/api/documents`)  
+    .then(res => res.json())
+    .then(data => setDocuments(data))
+    .catch(console.error);
   }, []);
 
   const createNewDocument = async () => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_SERVER_URL || 'http://localhost:5000'}/api/documents/create`,
+        `${API_URL}/api/documents/create`,
         {
           method: 'POST',
           headers: {
@@ -241,8 +240,7 @@ function App() {
   console.log('Full ID string:', JSON.stringify(docId));
   
   try {
-    const baseUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
-    const url = `${baseUrl}/api/documents/${docId}`;
+    const url = `${API_URL}/api/documents/${docId}`;
     
     console.log('DELETE request URL:', url); // 👈 See the exact URL
     
