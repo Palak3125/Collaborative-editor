@@ -255,7 +255,7 @@ mongoose.connection.on('reconnected', () => {
 
 // Import models and routes AFTER connection setup
 let Document;
-const documentRoutes=express.Router();
+let documentRoutes=express.Router();
 
 try {
   Document = require('./models/Document');
