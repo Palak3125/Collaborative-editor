@@ -169,6 +169,7 @@ function App() {
   const [isJoined, setIsJoined] = useState(false);
   const [documents, setDocuments] = useState([]);
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+  console.log('API URL:', API_URL); 
   useEffect(() => {
     fetch(`${API_URL}/api/documents`)  
     .then(res => res.json())
