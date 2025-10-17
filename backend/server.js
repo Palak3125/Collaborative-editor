@@ -221,6 +221,7 @@ app.use((req, res, next) => {
 app.get('/test', (req, res) => {
   res.json({ message: 'Server is working!', timestamp: new Date() });
 });
+const documents = {};
 
 // MongoDB Connection with detailed logging
 console.log('🔄 Connecting to MongoDB...');
@@ -254,7 +255,7 @@ mongoose.connection.on('reconnected', () => {
 
 // Import models and routes AFTER connection setup
 let Document;
-let documentRoutes;
+const documentRoutes=express.Router();
 
 try {
   Document = require('./models/Document');
@@ -264,10 +265,6 @@ try {
   console.error('❌ Error loading models/routes:', error.message);
   console.log('⚠️  Creating fallback routes...');
   
-  // Fallback in-memory storage
-  let documents = {};
-  
-  // Create simple routes if files don't exist
   documentRoutes = express.Router();
   
   documentRoutes.post('/', (req, res) => {
@@ -294,13 +291,31 @@ try {
   });
 
   documentRoutes.get('/:id', (req, res) => {
-    const doc = documents[req.params.id];
+    /*const doc = documents[req.params.id];
     
     if (!doc) {
       return res.status(404).json({ error: 'Document not found' });
     }
     
-    res.json(doc);
+    res.json(doc);*/
+    try {
+    if (Document && mongoose.connection.readyState === 1) {
+      // If MongoDB is connected, fetch from DB
+      Document.find().then(docs => {
+        res.json(docs);
+      }).catch(err => {
+        console.error('Error fetching from DB:', err);
+        res.json(Object.values(documents)); // Fallback
+      });
+    } else {
+      // Use in-memory storage
+      const allDocuments = Object.values(documents);
+      res.json(allDocuments);
+    }
+  } catch (error) {
+    console.error('❌ Error fetching documents:', error);
+    res.status(500).json({ error: error.message });
+  }
   });
 }
 
